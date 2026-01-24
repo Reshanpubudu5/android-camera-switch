@@ -25,7 +25,7 @@
 if "%OS%"=="Windows_NT" setlocal
 
 @rem Set JAVA_HOME to Java 17
-@rem set JAVA_HOME=D:\.m2\.jdks\jdk-17.0.10
+set JAVA_HOME=D:\.m2\.jdks\jdk-17.0.10
 
 set DIRNAME=%~dp0
 if "%DIRNAME%"=="" set DIRNAME=.

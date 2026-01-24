@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Android Camera</string>
+    <string name="app_name">Camera Switcher</string>
+    <string name="settings">Settings</string>
+    <string name="current_camera">Current: %1$s</string>
+    <string name="no_cameras">No cameras found</string>
+    <string name="camera_settings">Camera Settings</string>
+    <string name="rename_cameras">Rename your cameras below. Leave empty to use default name.</string>
+    <string name="save">Save</string>
+    <string name="reset">Reset</string>
+    <string name="back">Back</string>
+    <string name="camera_id">ID: %1$s</string>
+    <string name="default_name">Default: %1$s</string>
+    <string name="custom_name">Custom Name:</string>
+    <string name="enter_custom_name">Enter custom name</string>
 </resources>

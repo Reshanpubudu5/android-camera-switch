@@ -1,7 +1,7 @@
-# Installation script for Android Camera APK
+# Installation script for Camera Switcher APK
 # This script installs the APK on a connected Android device via ADB
 
-Write-Host "Installing Android Camera APK..." -ForegroundColor Green
+Write-Host "Installing Camera Switcher APK..." -ForegroundColor Green
 
 # Check if adb is available
 $adbPath = Get-Command adb -ErrorAction SilentlyContinue

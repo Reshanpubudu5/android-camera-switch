@@ -1,6 +1,6 @@
-# Android Camera App
+# Camera Switcher
 
-A simple Android camera application with quick switching between multiple cameras (Front, Macro, Wide, and USB cameras).
+A simple Android camera application with quick switching between multiple cameras (Front, Macro, Wide, USB, and Bluetooth cameras).
 
 ## Features
 
@@ -158,7 +158,7 @@ android-camera/
 ├── app/
 │   ├── src/
 │   │   └── main/
-│   │       ├── java/com/androidcamera/app/
+│   │       ├── java/com/cameraswitcher/app/
 │   │       │   └── MainActivity.java
 │   │       ├── res/
 │   │       │   ├── layout/

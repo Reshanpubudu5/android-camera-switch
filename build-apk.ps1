@@ -1,7 +1,7 @@
-# Build script for Android Camera APK
-# This script builds the debug APK for the Android Camera app
+# Build script for Camera Switcher APK
+# This script builds the debug APK for the Camera Switcher app
 
-Write-Host "Building Android Camera APK..." -ForegroundColor Green
+Write-Host "Building Camera Switcher APK..." -ForegroundColor Green
 
 # Check if gradlew.bat exists
 if (-Not (Test-Path "gradlew.bat")) {
