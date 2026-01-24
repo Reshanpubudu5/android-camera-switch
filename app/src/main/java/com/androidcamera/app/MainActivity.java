@@ -16,8 +16,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.camera2.interop.Camera2CameraInfo;
-import androidx.camera.camera2.interop.Camera2CameraSelector;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.Preview;
@@ -100,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             for (String cameraId : cameraIds) {
                 CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraId);
                 Integer lensFacing = characteristics.get(CameraCharacteristics.LENS_FACING);
-                Integer[] capabilities = characteristics.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES);
+                int[] capabilitiesArray = characteristics.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES);
                 
                 String cameraName = "Unknown";
                 int cameraType = CameraSelector.LENS_FACING_BACK;
@@ -111,24 +109,12 @@ public class MainActivity extends AppCompatActivity {
                         cameraType = CameraSelector.LENS_FACING_FRONT;
                     } else if (lensFacing == CameraCharacteristics.LENS_FACING_BACK) {
                         // Check for specific camera types using multiple characteristics
-                        Float[] focalLengths = characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
-                        Integer[] capabilities = characteristics.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES);
+                        float[] focalLengthsArray = characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
                         
-                        // Check for macro capability
-                        boolean isMacro = false;
-                        if (capabilities != null) {
-                            for (Integer cap : capabilities) {
-                                if (cap != null && cap == CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_MACRO_PHOTO) {
-                                    isMacro = true;
-                                    break;
-                                }
-                            }
-                        }
-                        
-                        if (isMacro) {
-                            cameraName = "Macro Camera";
-                        } else if (focalLengths != null && focalLengths.length > 0) {
-                            float focalLength = focalLengths[0];
+                        // Check for macro capability using focal length
+                        // Macro cameras typically have very short focal lengths (< 2mm)
+                        if (focalLengthsArray != null && focalLengthsArray.length > 0) {
+                            float focalLength = focalLengthsArray[0];
                             // Macro cameras typically have very short focal lengths (< 2mm)
                             if (focalLength < 2.0f) {
                                 cameraName = "Macro Camera";
@@ -146,9 +132,12 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } else {
                             // Fallback: use camera index to differentiate
-                            long backCameraCount = availableCameras.stream()
-                                    .filter(c -> c.lensFacing == CameraSelector.LENS_FACING_BACK)
-                                    .count();
+                            int backCameraCount = 0;
+                            for (CameraInfo c : availableCameras) {
+                                if (c.lensFacing == CameraSelector.LENS_FACING_BACK) {
+                                    backCameraCount++;
+                                }
+                            }
                             if (backCameraCount == 0) {
                                 cameraName = "Main Camera";
                             } else if (backCameraCount == 1) {
@@ -201,18 +190,12 @@ public class MainActivity extends AppCompatActivity {
                 Preview preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-                // Select camera by ID for precise control
-                CameraSelector cameraSelector;
-                try {
-                    // Use Camera2 interop to select by specific camera ID
-                    cameraSelector = Camera2CameraSelector.fromCameraId(cameraInfo.cameraId);
-                } catch (IllegalArgumentException e) {
-                    // Fallback to lens facing if camera ID selection fails
-                    Log.w(TAG, "Failed to select by camera ID, using lens facing", e);
-                    cameraSelector = new CameraSelector.Builder()
-                            .requireLensFacing(cameraInfo.lensFacing)
-                            .build();
-                }
+                // Select camera by lens facing
+                // Note: CameraX doesn't support direct camera ID selection in this version
+                // We use lens facing and rely on the camera discovery logic
+                CameraSelector cameraSelector = new CameraSelector.Builder()
+                        .requireLensFacing(cameraInfo.lensFacing)
+                        .build();
 
                 // Bind use cases to camera
                 currentCamera = cameraProvider.bindToLifecycle(
