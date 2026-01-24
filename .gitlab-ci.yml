@@ -11,23 +11,38 @@ variables:
 
 before_script:
   - export GRADLE_USER_HOME=$(pwd)/.gradle
-  - chmod +x ./gradlew 2>/dev/null || true
+  - |
+    if [ ! -f "./gradlew" ]; then
+      echo "Gradle wrapper not found. Creating wrapper..."
+      # Create gradle wrapper directory
+      mkdir -p gradle/wrapper
+      # Download Gradle wrapper JAR
+      (wget -q https://raw.githubusercontent.com/gradle/gradle/v8.3.0/gradle/wrapper/gradle-wrapper.jar -O gradle/wrapper/gradle-wrapper.jar 2>/dev/null) || (curl -sL https://raw.githubusercontent.com/gradle/gradle/v8.3.0/gradle/wrapper/gradle-wrapper.jar -o gradle/wrapper/gradle-wrapper.jar)
+      # Create gradle-wrapper.properties
+      cat > gradle/wrapper/gradle-wrapper.properties << 'PROPS'
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.3-bin.zip
+networkTimeout=10000
+validateDistributionUrl=true
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+PROPS
+      # Download proper gradlew script from Gradle
+      (wget -q https://raw.githubusercontent.com/gradle/gradle/v8.3.0/gradlew -O gradlew 2>/dev/null) || (curl -sL https://raw.githubusercontent.com/gradle/gradle/v8.3.0/gradlew -o gradlew)
+    fi
+  - chmod +x ./gradlew
 
 cache:
   key: ${CI_PROJECT_ID}
   paths:
     - .gradle/
+    - gradle/wrapper/
 
 build:
   stage: build
   script:
-    - |
-      if [ -f "./gradlew" ]; then
-        ./gradlew assembleDebug --no-daemon --stacktrace
-      else
-        echo "Gradle wrapper not found. Using system Gradle from Docker image."
-        gradle assembleDebug --no-daemon --stacktrace
-      fi
+    - ./gradlew assembleDebug --no-daemon --stacktrace
   artifacts:
     paths:
       - app/build/outputs/apk/debug/app-debug.apk
