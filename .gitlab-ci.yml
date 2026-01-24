@@ -10,6 +10,11 @@ variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 before_script:
+  # Install Java 17 (required for Android Gradle Plugin 8.1.0)
+  - apt-get update -qq && apt-get install -y -qq openjdk-17-jdk
+  - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+  - export PATH=$JAVA_HOME/bin:$PATH
+  - java -version
   - export GRADLE_USER_HOME=$(pwd)/.gradle
   - |
     if [ ! -f "./gradlew" ]; then
