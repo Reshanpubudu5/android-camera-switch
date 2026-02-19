@@ -328,19 +328,40 @@ public class MainActivity extends AppCompatActivity {
         CameraInfo current = availableCameras.get(currentCameraIndex);
         currentCameraText.setText("Current: " + current.displayName);
         
+        // Add previous navigation button with icon
+        ImageButton btnPrev = new ImageButton(this);
+        btnPrev.setImageResource(R.drawable.ic_arrow_back);
+        btnPrev.setBackgroundResource(R.drawable.rounded_nav_button);
+        btnPrev.setPadding(8, 8, 8, 8);
+        btnPrev.setContentDescription("Previous Camera");
+        btnPrev.setOnClickListener(v -> switchToPreviousCamera());
+        
+        LinearLayout.LayoutParams prevParams = new LinearLayout.LayoutParams(
+                (int) (48 * getResources().getDisplayMetrics().density), // 48dp
+                (int) (48 * getResources().getDisplayMetrics().density)  // 48dp
+        );
+        prevParams.setMargins(4, 0, 8, 0);
+        btnPrev.setLayoutParams(prevParams);
+        cameraButtonsContainer.addView(btnPrev);
+        
         // Create buttons for each camera
         for (int i = 0; i < availableCameras.size(); i++) {
             CameraInfo camera = availableCameras.get(i);
             Button btn = new Button(this);
             btn.setText(camera.displayName);
-            btn.setPadding(12, 12, 12, 12);
+            btn.setTextSize(12); // Smaller text
+            btn.setPadding((int)(10 * getResources().getDisplayMetrics().density), 
+                          (int)(6 * getResources().getDisplayMetrics().density), 
+                          (int)(10 * getResources().getDisplayMetrics().density), 
+                          (int)(6 * getResources().getDisplayMetrics().density));
             btn.setTextColor(0xFFFFFFFF);
+            btn.setAllCaps(false);
             
-            // Highlight current camera
+            // Highlight current camera with rounded background
             if (i == currentCameraIndex) {
-                btn.setBackgroundColor(0xFF4CAF50); // Green for current
+                btn.setBackgroundResource(R.drawable.rounded_camera_button_selected);
             } else {
-                btn.setBackgroundColor(0xFF2196F3); // Blue for others
+                btn.setBackgroundResource(R.drawable.rounded_camera_button);
             }
             
             final int cameraIndex = i;
@@ -354,38 +375,28 @@ public class MainActivity extends AppCompatActivity {
             
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
+                    (int) (36 * getResources().getDisplayMetrics().density) // 36dp height
             );
-            params.setMargins(8, 0, 8, 0);
+            params.setMargins(4, 0, 4, 0);
             btn.setLayoutParams(params);
             
             cameraButtonsContainer.addView(btn);
         }
         
-        // Add navigation buttons
-        Button btnPrev = new Button(this);
-        btnPrev.setText("◀ Prev");
-        btnPrev.setPadding(12, 12, 12, 12);
-        btnPrev.setTextColor(0xFFFFFFFF);
-        btnPrev.setBackgroundColor(0xFF4CAF50);
-        btnPrev.setOnClickListener(v -> switchToPreviousCamera());
-        
-        Button btnNext = new Button(this);
-        btnNext.setText("Next ▶");
-        btnNext.setPadding(12, 12, 12, 12);
-        btnNext.setTextColor(0xFFFFFFFF);
-        btnNext.setBackgroundColor(0xFF4CAF50);
+        // Add next navigation button with icon
+        ImageButton btnNext = new ImageButton(this);
+        btnNext.setImageResource(R.drawable.ic_arrow_forward);
+        btnNext.setBackgroundResource(R.drawable.rounded_nav_button);
+        btnNext.setPadding(8, 8, 8, 8);
+        btnNext.setContentDescription("Next Camera");
         btnNext.setOnClickListener(v -> switchToNextCamera());
         
-        LinearLayout.LayoutParams navParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+        LinearLayout.LayoutParams nextParams = new LinearLayout.LayoutParams(
+                (int) (48 * getResources().getDisplayMetrics().density), // 48dp
+                (int) (48 * getResources().getDisplayMetrics().density)  // 48dp
         );
-        navParams.setMargins(8, 0, 8, 0);
-        btnPrev.setLayoutParams(navParams);
-        btnNext.setLayoutParams(navParams);
-        
-        cameraButtonsContainer.addView(btnPrev);
+        nextParams.setMargins(8, 0, 4, 0);
+        btnNext.setLayoutParams(nextParams);
         cameraButtonsContainer.addView(btnNext);
     }
 
